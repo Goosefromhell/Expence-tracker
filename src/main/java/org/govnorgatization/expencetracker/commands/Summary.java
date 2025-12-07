@@ -4,11 +4,14 @@ import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 @CommandLine.Command(name = "sum", description = "Shows summary of expenses(month filter allowed)")
 public class Summary implements Runnable {
-    public File file = new File("test.csv");
+    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "test.csv");
+
+    public File file = target.toFile();
 
     @CommandLine.Option(names = {"-m", "--month"}, description = "Write month nuber to get expense from particular month")
     String month;
@@ -19,6 +22,7 @@ public class Summary implements Runnable {
         try (Scanner scanner = new Scanner(file)) {
             scanner.nextLine();
             int summa = 0;
+
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 int line_len = line.length();

@@ -4,17 +4,20 @@ import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 @CommandLine.Command(name = "list", description = "gives list of all expenses")
 
 public class List implements Runnable {
 
+    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "test.csv");
 
+    public File file = target.toFile();
     @Override
     public void run() {
         System.out.printf("%-3s %-10s %-15s %3s%n", "ID", "Date", "Description", "Amount");
-        try (Scanner scanner = new Scanner(new File("test.csv"))) {
+        try (Scanner scanner = new Scanner(file)) {
             scanner.nextLine();
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();

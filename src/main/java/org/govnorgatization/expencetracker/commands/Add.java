@@ -3,8 +3,10 @@ package org.govnorgatization.expencetracker.commands;
 import picocli.CommandLine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -17,10 +19,12 @@ public class Add implements Runnable {
     List<String> description;
     @CommandLine.Option(names = {"-a", "--amount"}, required = true, description = "Second add amount of money spent")
     String amount;
+    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "test.csv");
+
+    public File file = target.toFile();
 
     @Override
     public void run() {
-        File file = new File("test.csv");
         ArrayList<Integer> ids = new ArrayList<>();
         boolean firstLine = true;
         try (Scanner scanner = new Scanner(file)) {
@@ -35,20 +39,35 @@ public class Add implements Runnable {
                 int id = Integer.parseInt(line.substring(0, line.indexOf(",")));
                 ids.add(id);
             }
-        } catch (IOException e) {
-            System.out.println("Error occurred while reading file: " + e);
-        }
-        if (null != description && null != amount) { // Если нет хедера то все пойдет по одному месту
-            LocalDateTime time = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        } catch (FileNotFoundException e) {
+            try {
+                if (file.createNewFile()) {
+                    try (FileWriter writer = new FileWriter(file)) {
+                        writer.write("ID,Date,Description,Amount\n");
 
-            try (FileWriter writer = new FileWriter("test.csv", true)) {
-                writer.write(String.format("%d,%s,%s,%s\n", (ids.getLast() + 1), time.format(formatter), String.join(" ", description), amount));
-                System.out.println("test.csv создан!");
+                    } catch (IOException j) {
+                        System.out.println("Something went wrong while creating buffer file: " + j);
+                    }
 
-            } catch (IOException e) {
-                System.out.println("Error occurred while saving information to file: " + e);
+                }
+            } catch (IOException ex) {
+                System.out.println("Something went wrong while creating buffer file: " + ex);
+                throw new RuntimeException(ex);
             }
+        }
+        if (Integer.parseInt(amount) <= 0) {
+            System.out.println("Spent amount of money cannot be less/equals to zero");
+            return;
+        }
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        try (FileWriter writer = new FileWriter(file, true)) {
+
+            writer.write(String.format("%d,%s,%s,%s\n", (ids.isEmpty() ? 1 : ids.getLast() + 1), time.format(formatter), String.join(" ", description), amount));
+            System.out.println("Expense successfully added");
+
+        } catch (IOException e) {
+            System.out.println("Error occurred while saving information to file: " + e);
         }
     }
 }

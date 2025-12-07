@@ -5,6 +5,7 @@ import picocli.CommandLine;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -14,7 +15,9 @@ import java.util.Scanner;
 
 public class Update implements Runnable {
     public final String HEADER = "ID,Date,Description,Amount";
-    public File file = new File("test.csv");
+    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "test.csv");
+
+    public File file = target.toFile();
 
     @CommandLine.Option(names = {"-i", "--id"}, required = true, description = "First write the id of expense to update(you can see id's with \"list\" command)")
     String expense_to_update;
@@ -26,7 +29,7 @@ public class Update implements Runnable {
     @Override
     public void run() {
         boolean firstLine = true;
-
+        boolean found = false;
 
         StringBuilder after_update = new StringBuilder();
         try (Scanner scanner = new Scanner(file)) {
@@ -41,13 +44,20 @@ public class Update implements Runnable {
                 if (!line.substring(0, line.indexOf(",")).equals(expense_to_update)) {
                     after_update.append(line);
                     after_update.append("\n");
+                    continue;
                 } else {
                     LocalDateTime time = LocalDateTime.now();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                     after_update.append(String.format("%s,%s,%s,%s\n", line.substring(0, line.indexOf(",")), time.format(formatter), String.join(" ", description), amount));
+                    found = true;
+                    break;
                 }
             }
-            try (FileWriter writer = new FileWriter("test.csv")) {
+            if (!found) {
+                System.out.println("There is no expense with such id");
+                return;
+            }
+            try (FileWriter writer = new FileWriter("kek.csv")) {
                 writer.write(after_update.toString());
             }
         } catch (IOException e) {

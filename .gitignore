@@ -37,5 +37,3 @@ build/
 
 # Editor-based HTTP Client requests
 /httpRequests/
-
-test.csv
