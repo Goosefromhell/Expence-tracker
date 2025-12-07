@@ -12,25 +12,57 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-@CommandLine.Command(name = "app", mixinStandardHelpOptions = false)
-class Main implements Runnable {
-    public final String HEADER = "ID,Date,Description,Amount";
-    @CommandLine.Parameters
-    String cmd;
 
+@CommandLine.Command(name = "delete", description = "delete task by id")
+class Delete implements Runnable {
+    public final String HEADER = "ID,Date,Description,Amount";
+    public File file = new File("test.csv");
+    @Option(names = {"-i", "--id"})
+    String task_to_delete_id;
+
+
+    @Override
+    public void run() {
+        boolean firstLine = true;
+
+        if (null == task_to_delete_id) {
+            System.out.println("wrong format");
+            return;
+        }
+        StringBuilder after_deletion = new StringBuilder();
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (firstLine) {
+                    after_deletion.append(HEADER);
+                    after_deletion.append("\n");
+                    firstLine = false;
+                    continue;
+                }
+                if (!line.substring(0, line.indexOf(",")).equals(task_to_delete_id)) {
+                    after_deletion.append(line);
+                    after_deletion.append("\n");
+                }
+            }
+            try (FileWriter writer = new FileWriter("test.csv")) {
+                writer.write(after_deletion.toString());
+            }
+        } catch (IOException e) {
+            System.out.println("Error occurred while working with file: " + e);
+        }
+
+    }
+
+}
+
+@CommandLine.Command(name = "add", description = "add new expence")
+class Add implements Runnable {
     @Option(names = {"-d", "--description"}, arity = "1..*")
     List<String> description;
     @Option(names = {"-a", "--amount"})
     String amount;
-    @Option(names = {"--id"})
-    String task_to_delete_id;
 
-    static void main(String[] args) {
-        int exit = new CommandLine(new Main()).execute(args);
-        System.exit(exit);
-
-    }
-
+    @Override
     public void run() {
         File file = new File("test.csv");
         ArrayList<Integer> ids = new ArrayList<>();
@@ -51,50 +83,40 @@ class Main implements Runnable {
             System.out.println("Error occurred while reading file: " + e);
         }
         System.out.println(Arrays.toString(ids.toArray()));
-        firstLine = true;
-        if ("add".equals(cmd)) {
 
-            int text = 2;
-            if (null != description && null != amount) { // Если нет хедера то все пойдет по одному месту
+        int text = 2;
+        if (null != description && null != amount) { // Если нет хедера то все пойдет по одному месту
 
-                try (FileWriter writer = new FileWriter("test.csv", true)) {
-                    writer.write(String.format("%d,%d,%s,%s\n", (ids.getLast() + 1), text, String.join(" ", description), amount));
-                    System.out.println("test.csv создан!");
+            try (FileWriter writer = new FileWriter("test.csv", true)) {
+                writer.write(String.format("%d,%d,%s,%s\n", (ids.getLast() + 1), text, String.join(" ", description), amount));
+                System.out.println("test.csv создан!");
 
-                } catch (IOException e) {
-                    System.out.println("Error occurred while saving information to file: " + e);
-                }
-            }
-
-        } else if ("delete".equals(cmd)) {
-            if (null == task_to_delete_id) {
-                System.out.println("wrong format");
-                return;
-            }
-            StringBuilder after_deletion = new StringBuilder();
-            try (Scanner scanner = new Scanner(file)) {
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    if (firstLine) {
-                        after_deletion.append(HEADER);
-                        after_deletion.append("\n");
-                        firstLine = false;
-                        continue;
-                    }
-                    if (!line.substring(0, line.indexOf(",")).equals(task_to_delete_id)) {
-                        after_deletion.append(line);
-                        after_deletion.append("\n");
-                    }
-                }
-                try (FileWriter writer = new FileWriter("test.csv")) {
-                    writer.write(after_deletion.toString());
-                }
             } catch (IOException e) {
-                System.out.println("Error occurred while working with file: " + e);
+                System.out.println("Error occurred while saving information to file: " + e);
             }
-
         }
+    }
+}
 
+
+@CommandLine.Command(name = "app", subcommands = {Add.class, Delete.class}, mixinStandardHelpOptions = true)
+class Main implements Runnable {
+    static void main(String[] args) {
+        CommandLine cmd = new CommandLine(new Main());
+
+        cmd.setUnmatchedArgumentsAllowed(false);
+
+        cmd.setExecutionExceptionHandler((ex, commandLine, parseResult) -> {
+            System.out.println("ошибка: " + ex.getMessage());
+            commandLine.usage(System.out); // ← вывод списка команд
+            return 1;
+        });
+
+        cmd.execute(args);
+    }
+
+    public void run() {
+        System.out.println("Main command");
     }
 }
 
