@@ -11,18 +11,15 @@ import java.util.Scanner;
 public class Delete implements Runnable {
     public final String HEADER = "ID,Date,Description,Amount";
     public File file = new File("test.csv");
-    @CommandLine.Option(names = {"-i", "--id"})
-    String task_to_delete_id;
+    @CommandLine.Option(names = {"-i", "--id"}, required = true, description = "Write the id of expense to delete(you can see id's with \"list\" command)")
+    String expense_to_delete;
 
 
     @Override
     public void run() {
         boolean firstLine = true;
 
-        if (null == task_to_delete_id) {
-            System.out.println("wrong format");
-            return;
-        }
+
         StringBuilder after_deletion = new StringBuilder();
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
@@ -33,7 +30,7 @@ public class Delete implements Runnable {
                     firstLine = false;
                     continue;
                 }
-                if (!line.substring(0, line.indexOf(",")).equals(task_to_delete_id)) {
+                if (!line.substring(0, line.indexOf(",")).equals(expense_to_delete)) {
                     after_deletion.append(line);
                     after_deletion.append("\n");
                 }

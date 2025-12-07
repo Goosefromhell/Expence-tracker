@@ -8,15 +8,14 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 @CommandLine.Command(name = "add", description = "add new expence")
 public class Add implements Runnable {
-    @CommandLine.Option(names = {"-d", "--description"}, arity = "1..*")
+    @CommandLine.Option(names = {"-d", "--description"}, arity = "1..*", required = true, description = "First write description of expense")
     List<String> description;
-    @CommandLine.Option(names = {"-a", "--amount"})
+    @CommandLine.Option(names = {"-a", "--amount"}, required = true, description = "Second add amount of money spent")
     String amount;
 
     @Override
@@ -44,7 +43,7 @@ public class Add implements Runnable {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
             try (FileWriter writer = new FileWriter("test.csv", true)) {
-                writer.write(String.format("%d,%s,%s,%s\n", (ids.getLast() + 1), time.format(formatter) , String.join(" ", description), amount));
+                writer.write(String.format("%d,%s,%s,%s\n", (ids.getLast() + 1), time.format(formatter), String.join(" ", description), amount));
                 System.out.println("test.csv создан!");
 
             } catch (IOException e) {

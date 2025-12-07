@@ -20,10 +20,10 @@ public class List implements Runnable {
                 String line = scanner.nextLine();
                 String[] parts = line.split(",", 4);
                 String id = parts[0];
-                String date =  parts[1];
+                String date = parts[1];
                 String description = parts[2];
                 String amount = parts[3];
-            System.out.printf( "%-3s %-10s %-15s %3s%n", id, date, description, amount);
+                System.out.printf("%-3s %-10s %-15s %3s%n", id, date, description, amount);
             }
         } catch (IOException e) {
             System.out.println("Error occurred while reading file: " + e);
