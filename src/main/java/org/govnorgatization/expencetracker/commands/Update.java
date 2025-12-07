@@ -44,7 +44,6 @@ public class Update implements Runnable {
                 if (!line.substring(0, line.indexOf(",")).equals(expense_to_update)) {
                     after_update.append(line);
                     after_update.append("\n");
-                    continue;
                 } else {
                     LocalDateTime time = LocalDateTime.now();
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
