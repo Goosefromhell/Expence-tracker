@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class Update implements Runnable {
     public final String HEADER = "ID,Date,Description,Amount";
     public File file = new File("test.csv");
+
     @CommandLine.Option(names = {"-i", "--id"}, required = true, description = "First write the id of expense to update(you can see id's with \"list\" command)")
     String expense_to_update;
     @CommandLine.Option(names = {"-d", "--description"}, arity = "1..*", required = true, description = "Second write new description of expense")
