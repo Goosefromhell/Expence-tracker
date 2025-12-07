@@ -5,7 +5,10 @@ import picocli.CommandLine;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -36,11 +39,12 @@ public class Add implements Runnable {
         } catch (IOException e) {
             System.out.println("Error occurred while reading file: " + e);
         }
-        int text = 2;
         if (null != description && null != amount) { // Если нет хедера то все пойдет по одному месту
+            LocalDateTime time = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
             try (FileWriter writer = new FileWriter("test.csv", true)) {
-                writer.write(String.format("%d,%d,%s,%s\n", (ids.getLast() + 1), text, String.join(" ", description), amount));
+                writer.write(String.format("%d,%s,%s,%s\n", (ids.getLast() + 1), time.format(formatter) , String.join(" ", description), amount));
                 System.out.println("test.csv создан!");
 
             } catch (IOException e) {
