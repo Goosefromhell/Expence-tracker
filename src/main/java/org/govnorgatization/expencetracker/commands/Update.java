@@ -56,7 +56,7 @@ public class Update implements Runnable {
                 System.out.println("There is no expense with such id");
                 return;
             }
-            try (FileWriter writer = new FileWriter("kek.csv")) {
+            try (FileWriter writer = new FileWriter(file)) {
                 writer.write(after_update.toString());
             }
         } catch (IOException e) {

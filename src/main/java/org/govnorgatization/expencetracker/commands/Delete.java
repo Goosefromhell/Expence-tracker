@@ -45,7 +45,10 @@ public class Delete implements Runnable {
                 System.out.println("There is no expense with such id");
                 return;
             }
-            try (FileWriter writer = new FileWriter("kek.csv")) {
+            else {
+                System.out.println("Deleted");
+            }
+            try (FileWriter writer = new FileWriter(file)) {
                 writer.write(after_deletion.toString());
             }
         } catch (IOException e) {
