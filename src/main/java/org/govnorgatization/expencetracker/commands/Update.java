@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 public class Update implements Runnable {
     public final String HEADER = "ID,Date,Description,Amount";
-    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "test.csv");
+    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "expences.csv");
 
     public File file = target.toFile();
 

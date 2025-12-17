@@ -19,7 +19,7 @@ public class Add implements Runnable {
     List<String> description;
     @CommandLine.Option(names = {"-a", "--amount"}, required = true, description = "Second add amount of money spent")
     String amount;
-    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "test.csv");
+    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "expences.csv");
 
     public File file = target.toFile();
 

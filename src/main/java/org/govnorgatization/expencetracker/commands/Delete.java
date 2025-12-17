@@ -11,7 +11,7 @@ import java.util.Scanner;
 @CommandLine.Command(name = "delete", description = "delete task by id")
 public class Delete implements Runnable {
     public final String HEADER = "ID,Date,Description,Amount";
-    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "test.csv");
+    Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "expences.csv");
 
     public File file = target.toFile();
     @CommandLine.Option(names = {"-i", "--id"}, required = true, description = "Write the id of expense to delete(you can see id's with \"list\" command)")

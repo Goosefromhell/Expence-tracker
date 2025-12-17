@@ -11,7 +11,7 @@ import java.nio.file.Path;
 @CommandLine.Command(name = "app", subcommands = {Add.class, Delete.class, List.class, Update.class, Summary.class}, mixinStandardHelpOptions = true)
 class Main implements Runnable {
     static void main(String[] args) {
-        Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "test.csv");
+        Path target = Path.of(System.getProperty("user.home"), "Buffers", "Expense-tracker", "expences.csv");
 
         try {
             Files.createDirectories(target.getParent());
