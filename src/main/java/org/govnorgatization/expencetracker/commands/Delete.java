@@ -34,7 +34,7 @@ public class Delete implements Runnable {
                     firstLine = false;
                     continue;
                 }
-                if (line.substring(0, line.indexOf(",")).equals(expense_to_delete)) {
+                if (!line.substring(0, line.indexOf(",")).equals(expense_to_delete)) {
                     after_deletion.append(line);
                     after_deletion.append("\n");
                     continue;

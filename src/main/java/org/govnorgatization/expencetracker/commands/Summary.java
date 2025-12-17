@@ -21,17 +21,17 @@ public class Summary implements Runnable {
     public void run() {
         try (Scanner scanner = new Scanner(file)) {
             scanner.nextLine();
-            int summa = 0;
+            double summa = 0;
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 int line_len = line.length();
                 String amount = line.substring(line.lastIndexOf(",") + 1, line_len);
                 if (null == month) {
-                    summa += Integer.parseInt(amount);
+                    summa += Double.parseDouble(amount);
                 } else {
                     if (line.substring(line.indexOf("-") + 1, line.lastIndexOf("-")).equals(month)) {
-                        summa += Integer.parseInt(amount);
+                        summa += Double.parseDouble(amount);
                     }
                 }
             }

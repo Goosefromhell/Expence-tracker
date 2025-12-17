@@ -55,7 +55,7 @@ public class Add implements Runnable {
                 throw new RuntimeException(ex);
             }
         }
-        if (Integer.parseInt(amount) <= 0) {
+        if (Double.parseDouble(amount) <= 0) {
             System.out.println("Spent amount of money cannot be less/equals to zero");
             return;
         }
