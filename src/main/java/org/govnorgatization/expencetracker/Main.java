@@ -21,7 +21,7 @@ class Main implements Runnable {
         }
 
 
-        CommandLine cmd = new CommandLine(new Main());
+        final CommandLine cmd = new CommandLine(new Main());
 
         cmd.setUnmatchedArgumentsAllowed(false);
 
